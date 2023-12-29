@@ -1,14 +1,23 @@
-﻿using TodoList.Api.Enums;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using TodoList.Api.Entities;
+using TodoList.Api.Enums;
 
-namespace TodoListApi.Entities
+namespace TodoList.Api.Entities
 {
     public class TodoItem
     {
+        [Key]
         public Guid Id { get; set; }
 
+        [MaxLength(250)]
+        [Required]
         public string Name { get; set; }
 
-        public Guid? Assignee { get; set; }
+        public Guid? AssigneeId { get; set; }
+
+        [ForeignKey(nameof(AssigneeId))]
+        public User Assignee { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
