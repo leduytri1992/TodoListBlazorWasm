@@ -6,7 +6,6 @@ namespace TodoList.Api.Data
 {
     public class TodoListDbSeed
     {
-
         private readonly IPasswordHasher<User> _passwordHasher = new PasswordHasher<User>();
 
         public async Task SeedAsync(TodoListDbContext context, ILogger<TodoListDbSeed> logger)
@@ -21,7 +20,7 @@ namespace TodoList.Api.Data
                     UserName = "Admin1"
                 };
 
-                user.PasswordHash = _passwordHasher.HashPassword(user, "Admin@123");
+                user.PasswordHash = _passwordHasher.HashPassword(user, "Admin@123");  
                 context.Users.Add(user);
             }
 
