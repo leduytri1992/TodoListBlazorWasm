@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoList.Api.Entities;
 using TodoList.Api.Repositories;
+using TodoList.Models;
+using TodoList.Models.Enums;
 
 namespace TodoList.Api.Controllers
 {
@@ -18,25 +20,44 @@ namespace TodoList.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var todoItems = await _todoRepository.GetAll();
-            return Ok(todoItems);
+            var todoItems = await _todoRepository.GetTodoList();
+            var todoItemsDto = todoItems
+                .Select(x => new TodoItemDto()
+            {
+                Id = x.Id,
+                Name = x.Name,
+                Status = x.Status,
+                AssigneeId = x.AssigneeId,
+                Priority = x.Priority,
+                CreatedDate = x.CreatedDate,
+                AssigneeName = x.Assignee != null ? x.Assignee.UserName : "N/A"
+            }).ToList();
+
+            return Ok(todoItemsDto);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(TodoItem todoItem)
+        public async Task<IActionResult> Create(TodoItemCreateRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var todoItems = await _todoRepository.Create(todoItem);
-            return CreatedAtAction(nameof(GetById), new { id = todoItem.Id }, todoItems);
+            var todoItem = await _todoRepository.Create(new TodoItem
+            {
+                Name = request.Name,
+                Priority = request.Priority,
+                Status = Status.Open,
+                Id = request.Id
+
+            });
+            return CreatedAtAction(nameof(GetById), new { id = request.Id }, todoItem);
         }
 
 
         [HttpPut]
         [Route("{id}")]
-        public async Task<IActionResult> Update(Guid id, TodoItem todoItem)
+        public async Task<IActionResult> Update(Guid id, TodoItemUpdateRequest request)
         {
             if (!ModelState.IsValid)
             {
@@ -49,8 +70,21 @@ namespace TodoList.Api.Controllers
                 return NotFound($"Find by {id} is not found");
             }
 
-            var todoItems = await _todoRepository.Update(todoItem);
-            return Ok(todoItems);
+            todoItemDb.Name = request.Name;
+            todoItemDb.Priority = request.Priority;
+            todoItemDb.Status = request.Status;
+
+            var itemResult = await _todoRepository.Update(todoItemDb);
+
+            return Ok(new TodoItemDto()
+            {
+                Id = itemResult.Id,
+                Name = itemResult.Name,
+                Status = itemResult.Status,
+                AssigneeId = itemResult.AssigneeId,
+                Priority = itemResult.Priority,
+                CreatedDate = itemResult.CreatedDate
+            });
         }
 
         [HttpGet]
@@ -62,7 +96,15 @@ namespace TodoList.Api.Controllers
             {
                 return NotFound($"Find by {id} is not found");
             }
-            return Ok(todoItem);
+            return Ok(new TodoItemDto()
+            {
+                Id = todoItem.Id,
+                Name = todoItem.Name,
+                Status = todoItem.Status,
+                AssigneeId = todoItem.AssigneeId,
+                Priority = todoItem.Priority,
+                CreatedDate = todoItem.CreatedDate
+            });
         }
     }
 }

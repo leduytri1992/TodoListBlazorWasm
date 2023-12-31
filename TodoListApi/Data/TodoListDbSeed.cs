@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using TodoList.Api.Entities;
-using TodoList.Api.Enums;
+using TodoList.Models.Enums;
 
 namespace TodoList.Api.Data
 {

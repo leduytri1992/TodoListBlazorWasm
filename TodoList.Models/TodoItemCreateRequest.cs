@@ -1,10 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using TodoList.Models.Enums;
 
-namespace TodoList.Api.Entities
+namespace TodoList.Models
 {
-    public class TodoItem
+    public class TodoItemCreateRequest
     {
         [Key]
         public Guid Id { get; set; }
@@ -13,15 +16,8 @@ namespace TodoList.Api.Entities
         [Required]
         public string Name { get; set; }
 
-        public Guid? AssigneeId { get; set; }
-
-        [ForeignKey(nameof(AssigneeId))]
-        public User Assignee { get; set; }
-
         public DateTime CreatedDate { get; set; }
 
         public Priority Priority { get; set; }
-
-        public Status Status { get; set; }  
     }
 }
