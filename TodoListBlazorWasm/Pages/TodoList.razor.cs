@@ -12,6 +12,7 @@ namespace TodoListBlazorWasm.Pages
 
         protected override async Task OnInitializedAsync()
         {
+            await Task.Delay(1000);
             todoItems = await HttpClient.GetTodoItemsList();
         }
     }
