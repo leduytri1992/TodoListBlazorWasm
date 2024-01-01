@@ -1,0 +1,50 @@
+﻿@page "/taskDetails/{TaskId}"
+@using TodoListBlazorWasm.Services
+@using global::TodoList.Models
+
+@inject ITodoItemApiClient Http
+
+<h3>TaskDetails @TaskId</h3>
+
+@if (todoItem == null)
+{
+	<div class="spinner-border center" role="status"></div>
+}
+else
+{
+    <table class="table">
+        <tr>
+			<td>Name</td>
+            <td>@todoItem.Name</td>
+        </tr>
+		<tr>
+			<td>Assignee</td>
+			<td>@todoItem.AssigneeName</td>
+		</tr>
+		<tr>
+			<td>Priority</td>
+			<td>@todoItem.Priority</td>
+		</tr>
+		<tr>
+			<td>Created date</td>
+			<td>@todoItem.CreatedDate.ToString("dd/MM/yyy hh:mm")</td>
+		</tr>
+		<tr>
+			<td>Status</td>
+			<td>@todoItem.Status</td>
+		</tr>
+    </table>
+}
+
+@code {
+
+	[Parameter]
+	public string TaskId { get; set; }
+
+	private TodoItemDto todoItem { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		todoItem = await Http.GetTodoItemById(TaskId);
+	}
+}

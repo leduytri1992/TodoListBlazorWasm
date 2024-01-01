@@ -1,15 +1,56 @@
 ﻿@page "/todoList"
+@using global::TodoList.Models.Enums
 
 <PageTitle>TodoList</PageTitle>
 
 <h1>Todo List</h1>
 
-@if (todoItems == null)
+@if (TodoItems == null || Assignees == null)
 {
     <div class="spinner-border center" role="status"></div>
 }
 else
 {
+    <div class="row">
+        <EditForm Model="@TaskListSearch">
+            <div class="row">
+                <div class="col">
+                    <label>Name</label>
+                    <InputText class="form-control" @bind-Value="TaskListSearch.Name"></InputText>
+                </div>
+
+                <div class="col">
+                    <label>Assignee</label>
+                    <InputSelect class="form-select" @bind-Value="TaskListSearch.AssigneeId">
+                        <option value="">Select Item</option>
+                        @foreach (var assignee in Assignees)
+                        {
+                            @if (!string.IsNullOrEmpty(assignee.Name))
+                            {
+                                <option value="@assignee.Id">@assignee.Name</option>
+                            }
+                        }
+                    </InputSelect>
+                </div>
+
+                <div class="col">
+                    <label>Priority</label>
+                    <InputSelect class="form-select" @bind-Value="TaskListSearch.Priority">
+                        <option value="">Select Item</option>
+                        @foreach (var item in Enum.GetNames(typeof(Priority)))
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </InputSelect>
+                </div>
+
+                <div class="col pt-4">
+                    <button type="submit" class="btn btn-success">Search</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+
     <table class="table">
         <thead>
             <tr>
@@ -18,10 +59,11 @@ else
                 <th>Priority</th>
                 <th>Create Date</th>
                 <th>Status</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in todoItems)
+            @foreach (var item in TodoItems)
             {
                 <tr>
                     <td>@item.Name</td>
@@ -29,6 +71,9 @@ else
                     <td>@item.Priority</td>
                     <td>@item.CreatedDate.ToString("dd/MM/yyy hh:mm")</td>
                     <td>@item.Status</td>
+                    <td>
+                        <a href="/taskDetails/@item.Id">Detail</a>
+                    </td>
                 </tr>
             }
         </tbody>

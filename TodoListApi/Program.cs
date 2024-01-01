@@ -13,6 +13,7 @@ builder.Services.AddDbContext<TodoListDbContext>(options =>
 });
 
 builder.Services.AddTransient<ITodoRepository, TodoRepository>();
+builder.Services.AddTransient<IUserRepository, UserRepository>();
 
 builder.Services.AddControllers();
 
