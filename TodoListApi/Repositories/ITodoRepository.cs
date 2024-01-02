@@ -5,7 +5,7 @@ namespace TodoList.Api.Repositories
 {
     public interface ITodoRepository
     {
-        Task<IEnumerable<TodoItem>> GetTodoList(TodoListSearch todoListSearch);
+        Task<IEnumerable<TodoItem>> GetTodoList(TodoSearchRequest request);
 
         Task<TodoItem> Create(TodoItem todoItem);
 

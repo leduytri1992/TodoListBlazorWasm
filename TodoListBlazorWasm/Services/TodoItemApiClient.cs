@@ -18,7 +18,7 @@ namespace TodoListBlazorWasm.Services
 			return result!;
 		}
 
-		public async Task<List<TodoItemDto>> GetTodoItemList(TodoListSearch todoListSearch)
+		public async Task<List<TodoItemDto>> GetTodoList(TodoSearchRequest todoListSearch)
         {
             string url = $"/api/todoItems?name={todoListSearch.Name}&assigneeId={todoListSearch.AssigneeId}&priority={todoListSearch.Priority}";
             var result = await _httpClient.GetFromJsonAsync<List<TodoItemDto>>(url);

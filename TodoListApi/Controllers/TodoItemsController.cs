@@ -19,9 +19,9 @@ namespace TodoList.Api.Controllers
 
         // api/todoItems?name=
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] TodoListSearch todoListSearch)
+        public async Task<IActionResult> GetAll([FromQuery] TodoSearchRequest request)
         {
-            var todoItems = await _todoRepository.GetTodoList(todoListSearch);
+            var todoItems = await _todoRepository.GetTodoList(request);
             var todoItemsDto = todoItems
                 .Select(x => new TodoItemDto()
             {

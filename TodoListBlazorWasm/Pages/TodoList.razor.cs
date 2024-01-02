@@ -13,20 +13,21 @@ namespace TodoListBlazorWasm.Pages
 
         private List<TodoItemDto> TodoItems;
 
-        private TodoListSearch TodoListSearch = new TodoListSearch();
+        private TodoSearchRequest SearchRequest = new TodoSearchRequest();
 
         private List<AssigneeDto> Assignees;
 
         protected override async Task OnInitializedAsync()
         {
-            TodoItems = await TaskApiClient.GetTodoItemList(TodoListSearch);
+            Console.WriteLine("OnInitializedAsync");
+            TodoItems = await TaskApiClient.GetTodoList(SearchRequest);
             Assignees = await UserApiClient.GetUserList();
         }
 
         protected async Task SearchForm(EditContext context)
         {
-            // await Console.Out.WriteLineAsync(TodoListSearch.Name);
-            TodoItems = await TaskApiClient.GetTodoItemList(TodoListSearch);
+            // Console.WriteLine(TodoListSearch.Name);
+            TodoItems = await TaskApiClient.GetTodoList(SearchRequest);
         }
     }
 }

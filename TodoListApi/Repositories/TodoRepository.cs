@@ -19,24 +19,24 @@ namespace TodoList.Api.Repositories
             return await _context.TodoItems.FindAsync(id);
         }
 
-        public async Task<IEnumerable<TodoItem>> GetTodoList(TodoListSearch todoListSearch)
+        public async Task<IEnumerable<TodoItem>> GetTodoList(TodoSearchRequest request)
         {
             var query = _context.TodoItems
                 .Include(x => x.Assignee).AsQueryable();
 
-            if (!string.IsNullOrEmpty(todoListSearch.Name))
+            if (!string.IsNullOrEmpty(request.Name))
             {
-                query = query.Where(x => x.Name.Contains(todoListSearch.Name));
+                query = query.Where(x => x.Name.Contains(request.Name));
             }
 
-            if (todoListSearch.AssigneeId.HasValue)
+            if (request.AssigneeId.HasValue)
             {
-                query = query.Where(x => x.AssigneeId == todoListSearch.AssigneeId.Value);
+                query = query.Where(x => x.AssigneeId == request.AssigneeId.Value);
             }
 
-            if (todoListSearch.Priority.HasValue)
+            if (request.Priority.HasValue)
             {
-                query = query.Where(x => x.Priority == todoListSearch.Priority.Value);
+                query = query.Where(x => x.Priority == request.Priority.Value);
             }
 
             return await query.ToListAsync();
