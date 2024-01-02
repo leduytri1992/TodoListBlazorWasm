@@ -4,8 +4,8 @@ namespace TodoListBlazorWasm.Services
 {
     public interface ITodoItemApiClient
     {
-        Task<List<TodoItemDto>> GetTodoItemsList();
+        Task<List<TodoItemDto>> GetTodoItemList(TodoListSearch todoListSearch);
 
-        Task<TodoItemDto> GetTodoItemById(string id);
+        Task<TodoItemDto> GetTodoItemDetail(string id);
     }
 }

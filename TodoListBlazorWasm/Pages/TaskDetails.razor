@@ -45,6 +45,6 @@ else
 
 	protected override async Task OnInitializedAsync()
 	{
-		todoItem = await Http.GetTodoItemById(TaskId);
+		todoItem = await Http.GetTodoItemDetail(TaskId);
 	}
 }

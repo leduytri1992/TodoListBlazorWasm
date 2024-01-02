@@ -1,10 +1,11 @@
 ﻿using TodoList.Api.Entities;
+using TodoList.Models;
 
 namespace TodoList.Api.Repositories
 {
     public interface ITodoRepository
     {
-        Task<IEnumerable<TodoItem>> GetTodoList();
+        Task<IEnumerable<TodoItem>> GetTodoList(TodoListSearch todoListSearch);
 
         Task<TodoItem> Create(TodoItem todoItem);
 

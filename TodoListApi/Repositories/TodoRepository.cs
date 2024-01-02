@@ -19,9 +19,27 @@ namespace TodoList.Api.Repositories
             return await _context.TodoItems.FindAsync(id);
         }
 
-        public async Task<IEnumerable<TodoItem>> GetTodoList()
+        public async Task<IEnumerable<TodoItem>> GetTodoList(TodoListSearch todoListSearch)
         {
-            return await _context.TodoItems.Include(x => x.Assignee).ToListAsync();
+            var query = _context.TodoItems
+                .Include(x => x.Assignee).AsQueryable();
+
+            if (!string.IsNullOrEmpty(todoListSearch.Name))
+            {
+                query = query.Where(x => x.Name.Contains(todoListSearch.Name));
+            }
+
+            if (todoListSearch.AssigneeId.HasValue)
+            {
+                query = query.Where(x => x.AssigneeId == todoListSearch.AssigneeId.Value);
+            }
+
+            if (todoListSearch.Priority.HasValue)
+            {
+                query = query.Where(x => x.Priority == todoListSearch.Priority.Value);
+            }
+
+            return await query.ToListAsync();
         }
 
         public async Task<TodoItem> Create(TodoItem todoItem)

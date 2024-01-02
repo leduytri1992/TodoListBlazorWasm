@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Forms;
 using TodoList.Models;
 using TodoList.Models.Enums;
 using TodoListBlazorWasm.Services;
@@ -12,23 +13,20 @@ namespace TodoListBlazorWasm.Pages
 
         private List<TodoItemDto> TodoItems;
 
-        private TaskListSearch TaskListSearch = new TaskListSearch { };
+        private TodoListSearch TodoListSearch = new TodoListSearch();
 
         private List<AssigneeDto> Assignees;
 
         protected override async Task OnInitializedAsync()
         {
-            TodoItems = await TaskApiClient.GetTodoItemsList();
+            TodoItems = await TaskApiClient.GetTodoItemList(TodoListSearch);
             Assignees = await UserApiClient.GetUserList();
         }
-    }
 
-    public class TaskListSearch
-    {
-        public string Name { get; set; }
-
-        public Guid AssigneeId { get; set; }
-
-        public Priority Priority { get; set; }
+        protected async Task SearchForm(EditContext context)
+        {
+            // await Console.Out.WriteLineAsync(TodoListSearch.Name);
+            TodoItems = await TaskApiClient.GetTodoItemList(TodoListSearch);
+        }
     }
 }

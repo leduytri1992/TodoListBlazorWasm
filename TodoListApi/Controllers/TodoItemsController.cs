@@ -6,7 +6,7 @@ using TodoList.Models.Enums;
 
 namespace TodoList.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/todoItems")]
     [ApiController]
     public class TodoItemsController : Controller
     {
@@ -17,10 +17,11 @@ namespace TodoList.Api.Controllers
             _todoRepository = todoRepository;
         }
 
+        // api/todoItems?name=
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] TodoListSearch todoListSearch)
         {
-            var todoItems = await _todoRepository.GetTodoList();
+            var todoItems = await _todoRepository.GetTodoList(todoListSearch);
             var todoItemsDto = todoItems
                 .Select(x => new TodoItemDto()
             {

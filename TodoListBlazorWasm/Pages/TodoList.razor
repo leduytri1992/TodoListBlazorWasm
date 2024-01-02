@@ -12,17 +12,17 @@
 else
 {
     <div class="row">
-        <EditForm Model="@TaskListSearch">
+        <EditForm Model="@TodoListSearch" OnSubmit=@SearchForm>
             <div class="row">
                 <div class="col">
                     <label>Name</label>
-                    <InputText class="form-control" @bind-Value="TaskListSearch.Name"></InputText>
+                    <InputText class="form-control" @bind-Value="TodoListSearch.Name"></InputText>
                 </div>
 
                 <div class="col">
                     <label>Assignee</label>
-                    <InputSelect class="form-select" @bind-Value="TaskListSearch.AssigneeId">
-                        <option value="">Select Item</option>
+                    <InputSelect class="form-select" @bind-Value="TodoListSearch.AssigneeId">
+                        <option>Select Assignee</option>
                         @foreach (var assignee in Assignees)
                         {
                             @if (!string.IsNullOrEmpty(assignee.Name))
@@ -35,8 +35,8 @@ else
 
                 <div class="col">
                     <label>Priority</label>
-                    <InputSelect class="form-select" @bind-Value="TaskListSearch.Priority">
-                        <option value="">Select Item</option>
+                    <InputSelect class="form-select" @bind-Value="TodoListSearch.Priority">
+                        <option>Select Priority</option>
                         @foreach (var item in Enum.GetNames(typeof(Priority)))
                         {
                             <option value="@item">@item</option>
