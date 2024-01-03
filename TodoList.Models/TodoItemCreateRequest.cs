@@ -10,14 +10,15 @@ namespace TodoList.Models
     public class TodoItemCreateRequest
     {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
-        [MaxLength(250)]
-        [Required]
+        [MaxLength(30, ErrorMessage = "Max length is 30 characters")]
+        [Required(ErrorMessage = "Please enter your task name")]
         public string Name { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
-        public Priority Priority { get; set; }
+        [Required(ErrorMessage = "Please select your task priority")]
+        public Priority? Priority { get; set; }
     }
 }

@@ -38,20 +38,23 @@ namespace TodoList.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(TodoItemCreateRequest request)
+        public async Task<IActionResult> Create([FromBody] TodoItemCreateRequest request)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
             var todoItem = await _todoRepository.Create(new TodoItem
             {
                 Name = request.Name,
-                Priority = request.Priority,
+                Priority = request.Priority.HasValue ? request.Priority.Value : Priority.Low,
                 Status = Status.Open,
-                Id = request.Id
+                Id = request.Id,
+                CreatedDate = DateTime.Now
 
             });
+
             return CreatedAtAction(nameof(GetById), new { id = request.Id }, todoItem);
         }
 

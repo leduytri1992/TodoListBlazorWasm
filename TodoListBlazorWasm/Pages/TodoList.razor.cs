@@ -26,7 +26,7 @@ namespace TodoListBlazorWasm.Pages
 
         protected async Task SearchForm(EditContext context)
         {
-            // Console.WriteLine(TodoListSearch.Name);
+            //Console.WriteLine(SearchRequest.Name);
             TodoItems = await TaskApiClient.GetTodoList(SearchRequest);
         }
     }

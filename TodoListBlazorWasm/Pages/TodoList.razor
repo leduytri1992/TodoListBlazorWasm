@@ -45,7 +45,11 @@ else
                 </div>
 
                 <div class="col pt-4">
-                    <button type="submit" class="btn btn-success">Search</button>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+
+                <div class="col pt-4">
+                    <a href="/todoItemCreate" class="btn btn-success">Create</a>
                 </div>
             </div>
         </EditForm>
@@ -55,8 +59,8 @@ else
         <thead>
             <tr>
                 <th>Name</th>
-                <th>Assignee</th>
                 <th>Priority</th>
+                <th>Assignee</th>
                 <th>Create Date</th>
                 <th>Status</th>
                 <th></th>
@@ -67,8 +71,8 @@ else
             {
                 <tr>
                     <td>@item.Name</td>
-                    <td>@item.AssigneeName</td>
                     <td>@item.Priority</td>
+                    <td>@item.AssigneeName</td>
                     <td>@item.CreatedDate.ToString("dd/MM/yyy hh:mm")</td>
                     <td>@item.Status</td>
                     <td>
