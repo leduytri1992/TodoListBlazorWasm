@@ -4,6 +4,6 @@ namespace TodoListBlazorWasm.Services
 {
     public interface IUserApiClient
     {
-        Task<List<AssigneeDto>> GetUserList();
+        Task<List<AssigneeDto>?> GetUserList();
     }
 }

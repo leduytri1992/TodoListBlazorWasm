@@ -17,7 +17,7 @@ namespace TodoList.Api.Controllers
             _todoRepository = todoRepository;
         }
 
-        // api/todoItems?name=
+        // api/todoItems?name=&priority=&status=
         [HttpGet]
         public async Task<IActionResult> GetAll([FromQuery] TodoSearchRequest request)
         {
@@ -31,7 +31,7 @@ namespace TodoList.Api.Controllers
                 AssigneeId = x.AssigneeId,
                 Priority = x.Priority,
                 CreatedDate = x.CreatedDate,
-                AssigneeName = x.Assignee != null ? x.Assignee.UserName : "N/A"
+                AssigneeName = x.Assignee != null ? x.Assignee.UserName! : "N/A"
             }).ToList();
 
             return Ok(todoItemsDto);

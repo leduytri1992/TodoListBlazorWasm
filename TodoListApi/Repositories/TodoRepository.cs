@@ -14,7 +14,7 @@ namespace TodoList.Api.Repositories
             _context = context;
         }
 
-        public async Task<TodoItem> GetById(Guid id)
+        public async Task<TodoItem?> GetById(Guid id)
         {
             return await _context.TodoItems.FindAsync(id);
         }
@@ -39,7 +39,7 @@ namespace TodoList.Api.Repositories
                 query = query.Where(x => x.Priority == request.Priority.Value);
             }
 
-            return await query.OrderByDescending(x=>x.CreatedDate).ToListAsync();
+            return await query.OrderByDescending(x => x.CreatedDate).ToListAsync();
         }
 
         public async Task<TodoItem> Create(TodoItem todoItem)
@@ -55,12 +55,17 @@ namespace TodoList.Api.Repositories
             await _context.SaveChangesAsync();
             return todoItem;
         }
-        public async Task<TodoItem> Delete(Guid id)
+
+        public async Task<TodoItem?> Delete(Guid id)
         {
-            TodoItem todoItem = await GetById(id);
-            _context.TodoItems.Remove(todoItem);
-            await _context.SaveChangesAsync();
-            return todoItem;
+            TodoItem? findTodoItem = await GetById(id);
+            if (findTodoItem != null)
+            {
+                _context.TodoItems.Remove(findTodoItem);
+                await _context.SaveChangesAsync();
+            }
+            
+            return findTodoItem;
         }
     }
 }

@@ -11,8 +11,8 @@ namespace TodoList.Api.Repositories
 
         Task<TodoItem> Update(TodoItem todoItem);
 
-        Task<TodoItem> Delete(Guid id);
+        Task<TodoItem?> Delete(Guid id);
 
-        Task<TodoItem> GetById(Guid id);
+        Task<TodoItem?> GetById(Guid id);
     }
 }

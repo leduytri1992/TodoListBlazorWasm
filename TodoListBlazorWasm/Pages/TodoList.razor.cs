@@ -12,11 +12,11 @@ namespace TodoListBlazorWasm.Pages
         [Inject] private IUserApiClient UserApiClient { get; set; }
         [Inject] protected PreloadService PreloadService { get; set; }
 
-        private List<TodoItemDto> TodoItems;
+        private List<TodoItemDto>? TodoItems;
 
         private TodoSearchRequest SearchRequest = new TodoSearchRequest();
 
-        private List<AssigneeDto> Assignees;
+        private List<AssigneeDto>? Assignees;
 
         protected override async Task OnInitializedAsync()
         {

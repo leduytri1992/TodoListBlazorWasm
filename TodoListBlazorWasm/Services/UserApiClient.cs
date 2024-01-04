@@ -12,7 +12,7 @@ namespace TodoListBlazorWasm.Services
             _httpClient = httpClient;
         }
 
-        public async Task<List<AssigneeDto>> GetUserList()
+        public async Task<List<AssigneeDto>?> GetUserList()
         {
             var result = await _httpClient.GetFromJsonAsync<List<AssigneeDto>>("/api/users");
             return result;
