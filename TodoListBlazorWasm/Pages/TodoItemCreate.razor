@@ -40,10 +40,24 @@
 </EditForm>
 
 @code {
-    List<ToastMessage> messages = new List<ToastMessage>();
 
-    private void ShowMessage(ToastType toastType, string message)
-        => messages.Add(CreateToastMessage(toastType, message));
+    [Inject] protected ToastService ToastService { get; set; }
+
+    private TodoItemCreateRequest TodoItem = new TodoItemCreateRequest();
+
+    private async Task SubmitTodoItem(EditContext context)
+    {
+        var result = await TodoitemClientApi.CreateTodoItem(TodoItem);
+        if (result)
+        {
+            ToastService.Notify(CreateToastMessage(ToastType.Success, "Successfully"));
+            NavigationManager.NavigateTo("/todoList");
+        }
+        else
+        {
+            ToastService.Notify(CreateToastMessage(ToastType.Warning, "Some thing went wrong"));
+        }
+    }
 
     private ToastMessage CreateToastMessage(ToastType toastType, string message)
         => new ToastMessage
@@ -53,21 +67,5 @@
                 HelpText = $"{DateTime.Now}",
                 Message = message,
             };
-
-    private TodoItemCreateRequest TodoItem = new TodoItemCreateRequest();
-
-    private async Task SubmitTodoItem(EditContext context)
-    {
-        var result = await TodoitemClientApi.CreateTodoItem(TodoItem);
-        if (result)
-        {
-            ShowMessage(ToastType.Success, "Successfully");
-            NavigationManager.NavigateTo("/todoList");
-        }
-        else
-        {
-            ShowMessage(ToastType.Warning, "Some thing went wrong :)");
-        }
-    }
 }
 
