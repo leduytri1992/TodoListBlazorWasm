@@ -1,0 +1,22 @@
+﻿@using TodoList.Models.Enums
+
+@switch (Priority)
+{
+	case Priority.Low:
+		<Badge Color="BadgeColor.Dark">Low</Badge>
+		break;
+
+	case Priority.Medium:
+		<Badge Color="BadgeColor.Warning">Medium</Badge>
+		break;
+
+	case Priority.High:
+		<Badge Color="BadgeColor.Danger">High</Badge>
+		break;
+	default: break;
+}
+
+@code {
+	[Parameter]
+	public Priority Priority { get; set; }
+}

@@ -1,4 +1,5 @@
 ﻿@page "/todoList"
+@using TodoListBlazorWasm.Components
 @using global::TodoList.Models.Enums
 
 <PageTitle>TodoList</PageTitle>
@@ -7,10 +8,12 @@
 
 @if (TodoItems == null || Assignees == null)
 {
-    <div class="spinner-border center" role="status"></div>
+    PreloadService.Show(SpinnerColor.Primary, "Loading...");
 }
 else
 {
+    PreloadService.Hide();
+
     <div class="row">
         <EditForm Model="@SearchRequest" OnSubmit=@SearchForm>
             <div class="row">
@@ -22,7 +25,7 @@ else
                 <div class="col">
                     <label>Assignee</label>
                     <InputSelect class="form-select" @bind-Value="SearchRequest.AssigneeId">
-                        <option value="">Select Assignee</option>
+                        <option value="">Select</option>
                         @foreach (var assignee in Assignees)
                         {
                             @if (!string.IsNullOrEmpty(assignee.Name))
@@ -36,7 +39,7 @@ else
                 <div class="col">
                     <label>Priority</label>
                     <InputSelect class="form-select" @bind-Value="SearchRequest.Priority">
-                        <option value="">Select Priority</option>
+                        <option value="">Select</option>
                         @foreach (var item in Enum.GetNames(typeof(Priority)))
                         {
                             <option value="@item">@item</option>
@@ -71,10 +74,10 @@ else
             {
                 <tr>
                     <td>@item.Name</td>
-                    <td>@item.Priority</td>
+                    <td><PriorityLabel Priority="@item.Priority"></PriorityLabel></td>
                     <td>@item.AssigneeName</td>
                     <td>@item.CreatedDate.ToString("dd/MM/yyy hh:mm")</td>
-                    <td>@item.Status</td>
+                    <td><StatusLabel Status="@item.Status"></StatusLabel></td>
                     <td>
                         <a href="/taskDetails/@item.Id">Detail</a>
                     </td>

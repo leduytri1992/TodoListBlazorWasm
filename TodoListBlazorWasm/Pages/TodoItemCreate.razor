@@ -11,7 +11,9 @@
 
 <h3>TodoItemCreate</h3>
 
-<EditForm Model="TodoItem" OnSubmit="@SubmitTodoItem">
+<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopRight"/>
+
+<EditForm Model="TodoItem" OnValidSubmit="@SubmitTodoItem">
         <DataAnnotationsValidator />
         <div class="mb-3">
             <label for="Name" class="form-label">Name</label>
@@ -38,6 +40,20 @@
 </EditForm>
 
 @code {
+    List<ToastMessage> messages = new List<ToastMessage>();
+
+    private void ShowMessage(ToastType toastType, string message)
+        => messages.Add(CreateToastMessage(toastType, message));
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string message)
+        => new ToastMessage
+            {
+                Type = toastType,
+                Title = "Create new task",
+                HelpText = $"{DateTime.Now}",
+                Message = message,
+            };
+
     private TodoItemCreateRequest TodoItem = new TodoItemCreateRequest();
 
     private async Task SubmitTodoItem(EditContext context)
@@ -45,7 +61,12 @@
         var result = await TodoitemClientApi.CreateTodoItem(TodoItem);
         if (result)
         {
+            ShowMessage(ToastType.Success, "Successfully");
             NavigationManager.NavigateTo("/todoList");
+        }
+        else
+        {
+            ShowMessage(ToastType.Warning, "Some thing went wrong :)");
         }
     }
 }

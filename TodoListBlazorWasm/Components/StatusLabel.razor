@@ -1,0 +1,35 @@
+﻿@using TodoList.Models.Enums
+
+@switch (Status)
+{
+	case Status.Open:
+		<Badge Color="BadgeColor.Success">@nameof(Status.Open)</Badge>
+		break;
+
+	case Status.Inprogress:
+		<Badge Color="BadgeColor.Warning">@nameof(Status.Inprogress)</Badge>
+		break;
+
+	case Status.Done:
+		<Badge Color="BadgeColor.Dark">@nameof(Status.Done)</Badge>
+		break;
+
+	case Status.Resolved:
+		<Badge Color="BadgeColor.Secondary">@nameof(Status.Resolved)</Badge>
+		break;
+
+	case Status.Closed:
+		<Badge Color="BadgeColor.Dark">@nameof(Status.Closed)</Badge>
+		break;
+
+	case Status.Canceled:
+		<Badge Color="BadgeColor.Danger">@nameof(Status.Canceled)</Badge>
+		break;
+
+	default: break;
+}
+
+@code {
+	[Parameter]
+	public Status Status { get; set; }
+}

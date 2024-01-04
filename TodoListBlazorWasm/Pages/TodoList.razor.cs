@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using BlazorBootstrap;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using TodoList.Models;
-using TodoList.Models.Enums;
 using TodoListBlazorWasm.Services;
 
 namespace TodoListBlazorWasm.Pages
@@ -10,6 +10,7 @@ namespace TodoListBlazorWasm.Pages
     {
         [Inject] private ITodoItemApiClient TaskApiClient { get; set; }
         [Inject] private IUserApiClient UserApiClient { get; set; }
+        [Inject] protected PreloadService PreloadService { get; set; }
 
         private List<TodoItemDto> TodoItems;
 
