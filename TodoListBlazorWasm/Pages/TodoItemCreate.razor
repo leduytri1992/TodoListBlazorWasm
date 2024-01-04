@@ -9,9 +9,7 @@
 
 <PageTitle>TodoItemCreate</PageTitle>
 
-<h3>TodoItemCreate</h3>
-
-<Toasts class="p-3" Messages="messages" Placement="ToastsPlacement.TopRight"/>
+<h3>Create new Todo Item</h3>
 
 <EditForm Model="TodoItem" OnValidSubmit="@SubmitTodoItem">
         <DataAnnotationsValidator />
@@ -47,8 +45,8 @@
 
     private async Task SubmitTodoItem(EditContext context)
     {
-        var result = await TodoitemClientApi.CreateTodoItem(TodoItem);
-        if (result)
+        var isSuccess = await TodoitemClientApi.CreateTodoItem(TodoItem);
+        if (isSuccess)
         {
             ToastService.Notify(CreateToastMessage(ToastType.Success, "Successfully"));
             NavigationManager.NavigateTo("/todoList");

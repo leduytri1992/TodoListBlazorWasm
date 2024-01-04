@@ -18,7 +18,7 @@ namespace TodoListBlazorWasm.Services
             return result.IsSuccessStatusCode;
         }
 
-        public async Task<TodoItemDto> GetTodoItemDetail(string id)
+        public async Task<TodoItemDto> GetTodoItem(string id)
 		{
 			var result = await _httpClient.GetFromJsonAsync<TodoItemDto>($"/api/todoItems/{id}");
 			return result!;

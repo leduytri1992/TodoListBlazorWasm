@@ -1,10 +1,11 @@
-﻿@page "/taskDetails/{TaskId}"
+﻿@page "/todoItem/{Id}"
 @using TodoListBlazorWasm.Services
 @using global::TodoList.Models
 
 @inject ITodoItemApiClient Http
+@inject IConfiguration Configuration
 
-<h3>TaskDetails @TaskId</h3>
+<h3>Todo Item Detail @Id</h3>
 
 @if (todoItem == null)
 {
@@ -27,7 +28,7 @@ else
 		</tr>
 		<tr>
 			<td>Created date</td>
-			<td>@todoItem.CreatedDate.ToString("dd/MM/yyy hh:mm")</td>
+			<td>@todoItem.CreatedDate.ToString(Configuration["DateTimeFormat"])</td>
 		</tr>
 		<tr>
 			<td>Status</td>
@@ -39,12 +40,12 @@ else
 @code {
 
 	[Parameter]
-	public string TaskId { get; set; }
+	public string Id { get; set; }
 
 	private TodoItemDto todoItem { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
-		todoItem = await Http.GetTodoItemDetail(TaskId);
+		todoItem = await Http.GetTodoItem(Id);
 	}
 }
