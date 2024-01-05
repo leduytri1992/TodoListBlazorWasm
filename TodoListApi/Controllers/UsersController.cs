@@ -4,13 +4,13 @@ using TodoList.Models;
 
 namespace TodoList.Api.Controllers
 {
-    [Route("api/users")]
+    [Route("api/[controller]")]
     [ApiController]
-    public class UserController : Controller
+    public class UsersController : Controller
     {
         private readonly IUserRepository _userRepository;
 
-        public UserController(IUserRepository userRepository)
+        public UsersController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }

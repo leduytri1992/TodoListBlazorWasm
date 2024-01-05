@@ -6,7 +6,7 @@ using TodoList.Models.Enums;
 
 namespace TodoList.Api.Controllers
 {
-    [Route("api/todoItems")]
+    [Route("api/[controller]")]
     [ApiController]
     public class TodoItemsController : Controller
     {
@@ -77,6 +77,7 @@ namespace TodoList.Api.Controllers
             todoItemDb.Name = request.Name;
             todoItemDb.Priority = request.Priority;
             todoItemDb.Status = request.Status;
+            todoItemDb.AssigneeId = request.AssigneeId ?? null;
 
             var itemResult = await _todoRepository.Update(todoItemDb);
 

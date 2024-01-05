@@ -14,21 +14,27 @@ namespace TodoListBlazorWasm.Services
 
         public async Task<bool> CreateTodoItem(TodoItemCreateRequest request)
         {
-            var result = await _httpClient.PostAsJsonAsync("/api/todoItems", request);
-            return result.IsSuccessStatusCode;
+            var response = await _httpClient.PostAsJsonAsync("/api/todoItems", request);
+            return response.IsSuccessStatusCode;
         }
 
         public async Task<TodoItemDto> GetTodoItem(string id)
 		{
-			var result = await _httpClient.GetFromJsonAsync<TodoItemDto>($"/api/todoItems/{id}");
-			return result!;
+			var response = await _httpClient.GetFromJsonAsync<TodoItemDto>($"/api/todoItems/{id}");
+			return response!;
 		}
 
 		public async Task<List<TodoItemDto>> GetTodoList(TodoSearchRequest todoListSearch)
         {
             string url = $"/api/todoItems?name={todoListSearch.Name}&assigneeId={todoListSearch.AssigneeId}&priority={todoListSearch.Priority}";
-            var result = await _httpClient.GetFromJsonAsync<List<TodoItemDto>>(url);
-            return result!;
+            var response = await _httpClient.GetFromJsonAsync<List<TodoItemDto>>(url);
+            return response!;
         }
-    }
+
+		public async Task<bool> UpdateTodoItem(Guid id, TodoItemUpdateRequest request)
+		{
+            var response = await _httpClient.PutAsJsonAsync($"api/todoItems/{id}", request);
+            return response.IsSuccessStatusCode;
+		}
+	}
 }

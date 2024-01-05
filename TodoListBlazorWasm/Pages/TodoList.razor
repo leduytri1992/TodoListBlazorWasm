@@ -81,7 +81,7 @@ else
                     <td>@item.CreatedDate.ToString(Configuration["DateTimeFormat"])</td>
                     <td><StatusLabel Status="@item.Status"></StatusLabel></td>
                     <td>
-                        <a href="/taskDetails/@item.Id">Detail</a>
+                        <a href="/todoItem/@item.Id">Edit</a>
                     </td>
                 </tr>
             }

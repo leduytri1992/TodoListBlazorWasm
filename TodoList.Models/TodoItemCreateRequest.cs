@@ -13,12 +13,12 @@ namespace TodoList.Models
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [MaxLength(30, ErrorMessage = "Max length is 30 characters")]
-        [Required(ErrorMessage = "Please enter your task name")]
+        [Required(ErrorMessage = "Please enter task name")]
         public string Name { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
-        [Required(ErrorMessage = "Please select your task priority")]
+        [Required(ErrorMessage = "Please select task priority")]
         public Priority? Priority { get; set; }
     }
 }
