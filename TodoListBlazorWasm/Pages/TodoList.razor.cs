@@ -11,6 +11,9 @@ namespace TodoListBlazorWasm.Pages
         [Inject] private ITodoItemApiClient TaskApiClient { get; set; }
         [Inject] private IUserApiClient UserApiClient { get; set; }
         [Inject] protected PreloadService PreloadService { get; set; }
+        [Inject] protected ToastService? ToastService { get; set; }
+        [Inject] protected NavigationManager NavigationManager { get; set; }
+
 
         private List<TodoItemDto>? TodoItems;
 
@@ -30,5 +33,29 @@ namespace TodoListBlazorWasm.Pages
             //Console.WriteLine(SearchRequest.Name);
             TodoItems = await TaskApiClient.GetTodoList(SearchRequest);
         }
+
+        protected async Task DeleteTodoItem(string id)
+        {
+            var isSuccess = await TaskApiClient.DeleteTodoItem(id); 
+            if (isSuccess)
+	        {
+		        ToastService?.Notify(CreateToastMessage(ToastType.Success, "Successfully"));
+		        //NavigationManager.NavigateTo("/todoList");
+                StateHasChanged();
+            }
+            else
+	        {
+		        ToastService?.Notify(CreateToastMessage(ToastType.Warning, "Some thing went wrong :)"));
+	        }
+	}
+
+	private ToastMessage CreateToastMessage(ToastType toastType, string message)
+        => new ToastMessage
+        {
+            Type = toastType,
+            Title = "Delete task",
+            HelpText = $"{DateTime.Now}",
+            Message = message,
+        };
     }
 }

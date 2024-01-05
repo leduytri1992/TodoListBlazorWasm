@@ -69,6 +69,7 @@ else
                 <th>Create Date</th>
                 <th>Status</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -82,6 +83,9 @@ else
                     <td><StatusLabel Status="@item.Status"></StatusLabel></td>
                     <td>
                         <a href="/todoItem/@item.Id">Edit</a>
+                    </td>
+                    <td>
+                        <Button Color="ButtonColor.Danger" @onclick="(() => DeleteTodoItem(item.Id.ToString()))">Delete</Button>
                     </td>
                 </tr>
             }

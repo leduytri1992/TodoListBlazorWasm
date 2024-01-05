@@ -31,10 +31,16 @@ namespace TodoListBlazorWasm.Services
             return response!;
         }
 
-		public async Task<bool> UpdateTodoItem(Guid id, TodoItemUpdateRequest request)
+		public async Task<bool> UpdateTodoItem(string id, TodoItemUpdateRequest request)
 		{
             var response = await _httpClient.PutAsJsonAsync($"api/todoItems/{id}", request);
             return response.IsSuccessStatusCode;
 		}
-	}
+
+        public async Task<bool> DeleteTodoItem(string id)
+        {
+            var response = await _httpClient.DeleteAsync($"api/todoItems/{id}");
+            return response.IsSuccessStatusCode;
+        }
+    }
 }

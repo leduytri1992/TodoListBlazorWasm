@@ -24,15 +24,15 @@ namespace TodoList.Api.Controllers
             var todoItems = await _todoRepository.GetTodoList(request);
             var todoItemsDto = todoItems
                 .Select(x => new TodoItemDto()
-            {
-                Id = x.Id,
-                Name = x.Name,
-                Status = x.Status,
-                AssigneeId = x.AssigneeId,
-                Priority = x.Priority,
-                CreatedDate = x.CreatedDate,
-                AssigneeName = x.Assignee != null ? x.Assignee.UserName! : "N/A"
-            }).ToList();
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Status = x.Status,
+                    AssigneeId = x.AssigneeId,
+                    Priority = x.Priority,
+                    CreatedDate = x.CreatedDate,
+                    AssigneeName = x.Assignee != null ? x.Assignee.UserName! : "N/A"
+                }).ToList();
 
             return Ok(todoItemsDto);
         }
@@ -110,6 +110,19 @@ namespace TodoList.Api.Controllers
                 Priority = todoItem.Priority,
                 CreatedDate = todoItem.CreatedDate
             });
+        }
+
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var todoItem = await _todoRepository.GetById(id);
+            if (todoItem == null)
+            {
+                return NotFound($"Find by {id} is not found");
+            }
+            await _todoRepository.Delete(id);
+            return Ok();
         }
     }
 }

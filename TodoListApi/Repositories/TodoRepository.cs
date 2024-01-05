@@ -56,16 +56,17 @@ namespace TodoList.Api.Repositories
             return todoItem;
         }
 
-        public async Task<TodoItem?> Delete(Guid id)
+        public async Task<bool> Delete(Guid id)
         {
             TodoItem? findTodoItem = await GetById(id);
             if (findTodoItem != null)
             {
                 _context.TodoItems.Remove(findTodoItem);
                 await _context.SaveChangesAsync();
+                return true;
             }
             
-            return findTodoItem;
+            return false;
         }
     }
 }
