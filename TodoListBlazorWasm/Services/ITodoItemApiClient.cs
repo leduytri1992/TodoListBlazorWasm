@@ -12,6 +12,6 @@ namespace TodoListBlazorWasm.Services
 
 		Task<bool> UpdateTodoItem(string id, TodoItemUpdateRequest request);
 
-        Task<bool> DeleteTodoItem(string id);
+        Task<bool> DeleteTodoItem(Guid id);
     }
 }

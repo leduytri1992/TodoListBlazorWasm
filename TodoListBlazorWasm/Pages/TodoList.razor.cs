@@ -1,6 +1,5 @@
 ﻿using BlazorBootstrap;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Forms;
 using TodoList.Models;
 using TodoListBlazorWasm.Services;
 
@@ -8,40 +7,33 @@ namespace TodoListBlazorWasm.Pages
 {
     public partial class TodoList
     {
-        [Inject] private ITodoItemApiClient TaskApiClient { get; set; }
-        [Inject] private IUserApiClient UserApiClient { get; set; }
+        [Inject] private ITodoItemApiClient TodoItemApi { get; set; }
         [Inject] protected PreloadService PreloadService { get; set; }
         [Inject] protected ToastService? ToastService { get; set; }
         [Inject] protected NavigationManager NavigationManager { get; set; }
-
 
         private List<TodoItemDto>? TodoItems;
 
         private TodoSearchRequest SearchRequest = new TodoSearchRequest();
 
-        private List<AssigneeDto>? Assignees;
-
         protected override async Task OnInitializedAsync()
         {
-            Console.WriteLine("OnInitializedAsync");
-            TodoItems = await TaskApiClient.GetTodoList(SearchRequest);
-            Assignees = await UserApiClient.GetUserList();
+            TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
         }
 
-        protected async Task SearchForm(EditContext context)
+        public async Task SearchTodoItem(TodoSearchRequest searchRequest)
         {
-            //Console.WriteLine(SearchRequest.Name);
-            TodoItems = await TaskApiClient.GetTodoList(SearchRequest);
+            SearchRequest = searchRequest;
+            TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
         }
 
-        protected async Task DeleteTodoItem(string id)
+        protected async Task DeleteTodoItem(Guid id)
         {
-            var isSuccess = await TaskApiClient.DeleteTodoItem(id); 
+            var isSuccess = await TodoItemApi.DeleteTodoItem(id); 
             if (isSuccess)
 	        {
 		        ToastService?.Notify(CreateToastMessage(ToastType.Success, "Successfully"));
-		        //NavigationManager.NavigateTo("/todoList");
-                StateHasChanged();
+                TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
             }
             else
 	        {
