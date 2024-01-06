@@ -1,7 +1,9 @@
 ﻿using BlazorBootstrap;
 using Microsoft.AspNetCore.Components;
 using TodoList.Models;
+using TodoListBlazorWasm.Components;
 using TodoListBlazorWasm.Services;
+using TodoListBlazorWasm.Utilities;
 
 namespace TodoListBlazorWasm.Pages
 {
@@ -10,11 +12,14 @@ namespace TodoListBlazorWasm.Pages
         [Inject] private ITodoItemApiClient TodoItemApi { get; set; }
         [Inject] protected PreloadService PreloadService { get; set; }
         [Inject] protected ToastService? ToastService { get; set; }
-        [Inject] protected NavigationManager NavigationManager { get; set; }
 
         private List<TodoItemDto>? TodoItems;
 
         private TodoSearchRequest SearchRequest = new TodoSearchRequest();
+
+        private Guid Id { get; set; }
+        protected Confirmation DeleteConfirmation { get; set; }
+
 
         protected override async Task OnInitializedAsync()
         {
@@ -27,27 +32,27 @@ namespace TodoListBlazorWasm.Pages
             TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
         }
 
-        protected async Task DeleteTodoItem(Guid id)
+        protected async Task OnDeleteItem(Guid id)
         {
-            var isSuccess = await TodoItemApi.DeleteTodoItem(id); 
-            if (isSuccess)
-	        {
-		        ToastService?.Notify(CreateToastMessage(ToastType.Success, "Successfully"));
-                TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
-            }
-            else
-	        {
-		        ToastService?.Notify(CreateToastMessage(ToastType.Warning, "Some thing went wrong :)"));
-	        }
-	}
+            Id = id;
+            await DeleteConfirmation.ShowAsync();
+        }
 
-	private ToastMessage CreateToastMessage(ToastType toastType, string message)
-        => new ToastMessage
+        protected async Task OnDeleteConfirm(bool isConfirmed)
         {
-            Type = toastType,
-            Title = "Delete task",
-            HelpText = $"{DateTime.Now}",
-            Message = message,
-        };
+            if (isConfirmed)
+            {
+                var isSuccess = await TodoItemApi.DeleteTodoItem(Id);
+                if (isSuccess)
+                {
+                    ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Success, "Delete task successful"));
+                    TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
+                }
+                else
+                {
+                    ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Warning, "Some thing went wrong :)"));
+                }
+            }
+        }
     }
 }

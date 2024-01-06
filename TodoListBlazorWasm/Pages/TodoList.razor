@@ -20,32 +20,35 @@ else
         <TodoItemSearch OnSearch="SearchTodoItem"></TodoItemSearch>
     </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Priority</th>
-                <th>Assignee</th>
-                <th>Create Date</th>
-                <th>Status</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in TodoItems)
-            {
+    <div class="row">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td>@item.Name</td>
-                    <td><PriorityLabel Priority="@item.Priority"></PriorityLabel></td>
-                    <td>@item.AssigneeName</td>
-                    <td>@item.CreatedDate.ToString(Configuration["DateTimeFormat"])</td>
-                    <td><StatusLabel Status="@item.Status"></StatusLabel></td>
-                    <td>
-                        <a href="/todoItem/@item.Id" class="btn btn-primary">Edit</a>
-                        <Button Color="ButtonColor.Danger" @onclick="(() => DeleteTodoItem(item.Id))">Delete</Button>
-                    </td>
+                    <th>Name</th>
+                    <th>Priority</th>
+                    <th>Assignee</th>
+                    <th>Create Date</th>
+                    <th>Status</th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var item in TodoItems)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td><PriorityLabel Priority="@item.Priority"></PriorityLabel></td>
+                        <td>@item.AssigneeName</td>
+                        <td>@item.CreatedDate.ToString(Configuration["DateTimeFormat"])</td>
+                        <td><StatusLabel Status="@item.Status"></StatusLabel></td>
+                        <td>
+                            <a href="/todoItem/@item.Id" class="btn btn-primary">Edit</a>
+                            <Button Color="ButtonColor.Danger" @onclick="() => OnDeleteItem(item.Id)">Delete</Button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <Confirmation @ref="DeleteConfirmation" OnConfirmation="@OnDeleteConfirm"></Confirmation>
+    </div>
 }

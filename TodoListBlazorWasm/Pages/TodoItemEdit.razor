@@ -1,6 +1,7 @@
 ﻿@page "/todoItem/{Id}"
 
 @using TodoListBlazorWasm.Services
+@using TodoListBlazorWasm.Utilities
 @using global::TodoList.Models
 @using global::TodoList.Models.Enums
 
@@ -115,21 +116,12 @@ else
 		var isSuccess = await TodoItemApi.UpdateTodoItem(Id, UpdateRequest);
 		if (isSuccess)
 		{
-			ToastService?.Notify(CreateToastMessage(ToastType.Success, "Successfully"));
+			ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Success, "Update task", "Successfully"));
 			NavigationManager.NavigateTo("/todoList");
 		}
 		else
 		{
-			ToastService?.Notify(CreateToastMessage(ToastType.Warning, "Some thing went wrong :)"));
+			ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Warning, "Update task", "Some thing went wrong :)"));
 		}
 	}
-
-	private ToastMessage CreateToastMessage(ToastType toastType, string message)
-		=> new ToastMessage
-			{
-				Type = toastType,
-				Title = "Update task",
-				HelpText = $"{DateTime.Now}",
-				Message = message,
-			};
 }
