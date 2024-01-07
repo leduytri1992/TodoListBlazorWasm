@@ -1,6 +1,7 @@
 ﻿using BlazorBootstrap;
 using Microsoft.AspNetCore.Components;
 using TodoList.Models;
+using TodoList.Models.SeedWork;
 using TodoListBlazorWasm.Components;
 using TodoListBlazorWasm.Pages.Components;
 using TodoListBlazorWasm.Services;
@@ -15,8 +16,9 @@ namespace TodoListBlazorWasm.Pages
         [Inject] protected ToastService? ToastService { get; set; }
 
         private List<TodoItemDto>? TodoItems;
+        private MetaData MetaData { get; set; } = new MetaData();
 
-        private TodoSearchRequest SearchRequest = new TodoSearchRequest();
+        private TaskListSearch TaskListSearch = new TaskListSearch();
 
         private Guid Id { get; set; }
         protected Confirmation DeleteConfirmation { get; set; }
@@ -25,14 +27,14 @@ namespace TodoListBlazorWasm.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
-        }
+			await GetTodoItems();
+		}
 
-        public async Task SearchTodoItem(TodoSearchRequest searchRequest)
+        public async Task SearchTodoItem(TaskListSearch searchRequest)
         {
-            SearchRequest = searchRequest;
-            TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
-        }
+            TaskListSearch = searchRequest;
+			await GetTodoItems();
+		}
 
         protected async Task OnDeleteItem(Guid id)
         {
@@ -48,7 +50,7 @@ namespace TodoListBlazorWasm.Pages
                 if (isSuccess)
                 {
                     ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Primary, "Delete task successful"));
-                    TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
+                    await GetTodoItems();
                 }
                 else
                 {
@@ -66,8 +68,21 @@ namespace TodoListBlazorWasm.Pages
         {
             if (result)
             {
-                TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
+                await GetTodoItems();
             }
+        }
+
+        protected async Task OnSelectedPage(int page)
+        {
+            TaskListSearch.PageNumber = page;
+            await GetTodoItems();
+        }
+
+        private async Task GetTodoItems()
+        {
+            var pagingResponse = await TodoItemApi.GetTodoList(TaskListSearch);
+            TodoItems = pagingResponse.Items;
+            MetaData = pagingResponse.MetaData;
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using System.Net.Http.Json;
+﻿using Microsoft.AspNetCore.WebUtilities;
+using System.Net.Http.Json;
 using TodoList.Models;
+using TodoList.Models.SeedWork;
 
 namespace TodoListBlazorWasm.Services
 {
@@ -24,10 +26,28 @@ namespace TodoListBlazorWasm.Services
 			return response!;
 		}
 
-		public async Task<List<TodoItemDto>> GetTodoList(TodoSearchRequest todoListSearch)
+		public async Task<PageList<TodoItemDto>> GetTodoList(TaskListSearch taskListSearch)
         {
-            string url = $"/api/todoItems?name={todoListSearch.Name}&assigneeId={todoListSearch.AssigneeId}&priority={todoListSearch.Priority}";
-            var response = await _httpClient.GetFromJsonAsync<List<TodoItemDto>>(url);
+            var queryString = new Dictionary<string, string>
+            {
+                ["pageNumber"] = taskListSearch.PageNumber.ToString()
+			};
+
+            if (!string.IsNullOrEmpty(taskListSearch.Name))
+            {
+                queryString.Add("name", taskListSearch.Name);
+            }
+			if (taskListSearch.AssigneeId.HasValue)
+			{
+				queryString.Add("assigneeId", taskListSearch.AssigneeId.ToString());
+			}
+			if (taskListSearch.Priority.HasValue)
+			{
+				queryString.Add("priority", taskListSearch.Priority.ToString());
+			}
+
+            string url = QueryHelpers.AddQueryString("api/todoItems", queryString);
+			var response = await _httpClient.GetFromJsonAsync<PageList<TodoItemDto>>(url);
             return response!;
         }
 

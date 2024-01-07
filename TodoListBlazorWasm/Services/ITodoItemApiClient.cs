@@ -1,10 +1,11 @@
 ﻿using TodoList.Models;
+using TodoList.Models.SeedWork;
 
 namespace TodoListBlazorWasm.Services
 {
     public interface ITodoItemApiClient
     {
-        Task<List<TodoItemDto>> GetTodoList(TodoSearchRequest todoListSearch);
+        Task<PageList<TodoItemDto>> GetTodoList(TaskListSearch todoListSearch);
 
         Task<TodoItemDto> GetTodoItem(string id);
 

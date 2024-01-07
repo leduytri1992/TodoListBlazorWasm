@@ -1,8 +1,9 @@
 ﻿using TodoList.Models.Enums;
+using TodoList.Models.SeedWork;
 
 namespace TodoList.Models
 {
-    public class TodoSearchRequest
+    public class TaskListSearch : PagingParameters
     {
         public string? Name { get; set; }
 

@@ -50,6 +50,9 @@ else
                     </tr>
                 }
             </tbody>
+            <tfoot>
+                <Paginnation MetaData="MetaData" Spread="2" SelectedPage="OnSelectedPage"></Paginnation>
+            </tfoot>
         </table>
         <Confirmation @ref="DeleteConfirmation" OnConfirmation="@OnDeleteConfirm"></Confirmation>
         <AssignTask @ref="AssignTaskDialog" CloseEventCallback="@OnAssignTaskDone"></AssignTask>

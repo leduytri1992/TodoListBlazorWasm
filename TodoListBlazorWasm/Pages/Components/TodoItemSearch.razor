@@ -52,11 +52,11 @@
     [Inject] private IUserApiClient UserApi { get; set; }
 
     [Parameter]
-    public EventCallback<TodoSearchRequest> OnSearch { get; set; }
+    public EventCallback<TaskListSearch> OnSearch { get; set; }
 
     private List<AssigneeDto>? Assignees;
 
-    private TodoSearchRequest SearchRequest = new TodoSearchRequest();
+    private TaskListSearch SearchRequest = new TaskListSearch();
 
     protected override async Task OnInitializedAsync()
     {

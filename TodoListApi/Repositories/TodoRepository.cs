@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using TodoList.Api.Data;
 using TodoList.Api.Entities;
 using TodoList.Models;
+using TodoList.Models.SeedWork;
 
 namespace TodoList.Api.Repositories
 {
@@ -19,27 +21,34 @@ namespace TodoList.Api.Repositories
             return await _context.TodoItems.FindAsync(id);
         }
 
-        public async Task<IEnumerable<TodoItem>> GetTodoList(TodoSearchRequest request)
+        public async Task<PageList<TodoItem>> GetTodoList(TaskListSearch taskListSearch)
         {
             var query = _context.TodoItems
                 .Include(x => x.Assignee).AsQueryable();
 
-            if (!string.IsNullOrEmpty(request.Name))
+            if (!string.IsNullOrEmpty(taskListSearch.Name))
             {
-                query = query.Where(x => x.Name.Contains(request.Name));
+                query = query.Where(x => x.Name.Contains(taskListSearch.Name));
             }
 
-            if (request.AssigneeId.HasValue)
+            if (taskListSearch.AssigneeId.HasValue)
             {
-                query = query.Where(x => x.AssigneeId == request.AssigneeId.Value);
+                query = query.Where(x => x.AssigneeId == taskListSearch.AssigneeId.Value);
             }
 
-            if (request.Priority.HasValue)
+            if (taskListSearch.Priority.HasValue)
             {
-                query = query.Where(x => x.Priority == request.Priority.Value);
+                query = query.Where(x => x.Priority == taskListSearch.Priority.Value);
             }
 
-            return await query.OrderByDescending(x => x.CreatedDate).ToListAsync();
+            var count = await query.CountAsync();
+
+            var data = await query.OrderByDescending(x => x.CreatedDate)
+                .Skip((taskListSearch.PageNumber - 1) * taskListSearch.PageSize)
+                .Take(taskListSearch.PageSize)
+                .ToListAsync();
+
+            return new PageList<TodoItem>(data, count, taskListSearch.PageNumber, taskListSearch.PageSize);
         }
 
         public async Task<TodoItem> Create(TodoItem todoItem)
