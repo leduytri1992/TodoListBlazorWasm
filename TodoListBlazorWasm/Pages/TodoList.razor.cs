@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Components;
 using TodoList.Models;
 using TodoListBlazorWasm.Components;
+using TodoListBlazorWasm.Pages.Components;
 using TodoListBlazorWasm.Services;
 using TodoListBlazorWasm.Utilities;
 
@@ -20,6 +21,7 @@ namespace TodoListBlazorWasm.Pages
         private Guid Id { get; set; }
         protected Confirmation DeleteConfirmation { get; set; }
 
+        protected AssignTask AssignTaskDialog { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -45,13 +47,26 @@ namespace TodoListBlazorWasm.Pages
                 var isSuccess = await TodoItemApi.DeleteTodoItem(Id);
                 if (isSuccess)
                 {
-                    ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Success, "Delete task successful"));
+                    ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Primary, "Delete task successful"));
                     TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
                 }
                 else
                 {
                     ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Warning, "Some thing went wrong :)"));
                 }
+            }
+        }
+
+        protected void OnAssignTask(Guid id)
+        {
+            AssignTaskDialog?.Show(id);
+        }
+
+        protected async Task OnAssignTaskDone(bool result)
+        {
+            if (result)
+            {
+                TodoItems = await TodoItemApi.GetTodoList(SearchRequest);
             }
         }
     }

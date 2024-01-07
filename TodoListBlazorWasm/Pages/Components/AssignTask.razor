@@ -1,0 +1,94 @@
+﻿@using TodoListBlazorWasm.Services
+@using TodoListBlazorWasm.Utilities
+@using global::TodoList.Models
+
+@inject ITodoItemApiClient TodoApi;
+@inject IUserApiClient UserApi;
+
+@if (ShowDialg && Assignees is not null)
+{
+	<div class="modal fade show d-block" id="assignModal" tabindex="-1" role="dialog">
+		<div class="modal-dialog">
+			<EditForm Model="@Model" OnSubmit="HandleAssignSubmit">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="exampleModalLabel">Assign task to user</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" @onclick="()=>Hide()"></button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="assign-name" class="col-form-label">Assignee</label>
+						<InputSelect class="form-select" @bind-Value="Model.UserId">
+							<option value="">Select</option>
+							@foreach (var assignee in Assignees)
+							{
+								@if (!string.IsNullOrEmpty(assignee.Name))
+								{
+									<option value="@assignee.Id">@assignee.Name</option>
+								}
+							}
+						</InputSelect>
+					</div>
+				</div>
+				<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @onclick="()=>Hide()">Close</button>
+					<button type="submit" class="btn btn-primary">Assign</button>
+				</div>
+			</div>
+			</EditForm>
+		</div>
+	</div>
+}
+
+@code {
+	[Inject] protected ToastService? ToastService { get; set; }
+
+	protected ConfirmDialog dialog = default!;
+
+	public bool ShowDialg { get; set; }
+
+	private AssignTaskRequest Model { get; set; } = new AssignTaskRequest();
+	private List<AssigneeDto>? Assignees;
+	private Guid TaskId;
+
+	[Parameter]
+	public string? Title { get; set; }
+
+	[Parameter]
+	public string? Message { get; set; }
+
+	[Parameter]
+	public EventCallback<bool> CloseEventCallback { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		Assignees = await UserApi.GetUserList();
+	}
+
+	public void Show(Guid taskId)
+	{
+		ShowDialg = true;
+		TaskId = taskId;
+		StateHasChanged();
+	}
+
+	private void Hide()
+	{
+		ShowDialg = false;
+		StateHasChanged();
+	}
+
+	protected async Task HandleAssignSubmit()
+	{
+		var result = await TodoApi.AssignTask(TaskId, Model);
+		if (result)
+		{
+			await CloseEventCallback.InvokeAsync(true);
+			Hide();
+		} 
+		else
+		{
+			ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Warning, "Assign task failed"));
+		}
+	}
+}
