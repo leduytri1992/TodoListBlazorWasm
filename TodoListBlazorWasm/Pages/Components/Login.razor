@@ -1,0 +1,27 @@
+﻿@page "/login"
+
+@using global::TodoList.Models
+
+<EditForm Model="LoginModel" OnValidSubmit="LoginSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+    <div class="form-group">
+        <label for="username">Username</label>
+        <InputText class="form-control" id="username" placeholder="Enter user name" @bind-Value="LoginModel.UserName"></InputText>
+        <ValidationMessage For="()=>LoginModel.UserName"></ValidationMessage>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <InputText type="password" class="form-control" id="password" placeholder="Password" @bind-Value="LoginModel.Password"></InputText>
+        <ValidationMessage For="()=>LoginModel.Password"></ValidationMessage>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Login</button>
+</EditForm>
+
+@code {
+    private LoginRequest LoginModel = new LoginRequest();
+
+    protected async Task LoginSubmit()
+    {
+    }
+}
