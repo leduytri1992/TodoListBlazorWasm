@@ -46,7 +46,7 @@ namespace TodoListBlazorWasm.Services
 				queryString.Add("priority", taskListSearch.Priority.ToString());
 			}
 
-            string url = QueryHelpers.AddQueryString("api/todoItem", queryString);
+            string url = QueryHelpers.AddQueryString("api/todoItems", queryString);
 			var response = await _httpClient.GetFromJsonAsync<PageList<TodoItemDto>>(url);
             return response!;
         }

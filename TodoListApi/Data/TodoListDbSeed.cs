@@ -15,9 +15,12 @@ namespace TodoList.Api.Data
                 var user = new User
                 {
                     Id = Guid.NewGuid(),
-                    Email = "sjmple.dev@gmail.com",
+                    Email = "s1mple.dev@gmail.com",
+                    NormalizedEmail = "ADMIN1@GMAIL.COM",
                     PhoneNumber = "1234567890",
-                    UserName = "Admin1"
+                    UserName = "Admin1",
+                    NormalizedUserName = "ADMIN",
+                    SecurityStamp = Guid.NewGuid().ToString()
                 };
 
                 user.PasswordHash = _passwordHasher.HashPassword(user, "Admin@123");  
