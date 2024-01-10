@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TodoList.Api.Entities;
+using TodoList.Api.Extensions;
 using TodoList.Api.Repositories;
 using TodoList.Models;
 using TodoList.Models.Enums;
@@ -9,6 +12,7 @@ namespace TodoList.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes =  JwtBearerDefaults.AuthenticationScheme)]
     public class TodoItemsController : Controller
     {
         private readonly ITodoRepository _todoRepository;
@@ -139,6 +143,32 @@ namespace TodoList.Api.Controllers
                 CreatedDate = todoItem.CreatedDate
             });
         }
+
+        [HttpGet("me")]
+        public async Task<IActionResult> GetByAssigneeId([FromQuery] TaskListSearch taskListSearch)
+        {
+            var userId = User.GetUserId();
+			var pageList = await _todoRepository.GetTodoListByUserId(Guid.Parse(userId), taskListSearch);
+
+			var todoItemsDto = pageList.Items.Select(x => new TodoItemDto()
+			{
+				Id = x.Id,
+				Name = x.Name,
+				Status = x.Status,
+				AssigneeId = x.AssigneeId,
+				Priority = x.Priority,
+				CreatedDate = x.CreatedDate,
+				AssigneeName = x.Assignee != null ? x.Assignee.UserName! : "N/A"
+			}).ToList();
+
+			var metaData = pageList.MetaData;
+			return Ok(
+				new PageList<TodoItemDto>(todoItemsDto,
+					metaData.TotalCount,
+					metaData.CurrentPage,
+					metaData.PageSize)
+				);
+		}
 
         [HttpDelete]
         [Route("{id}")]

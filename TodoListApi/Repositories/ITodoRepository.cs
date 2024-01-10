@@ -8,6 +8,8 @@ namespace TodoList.Api.Repositories
     {
         Task<PageList<TodoItem>> GetTodoList(TaskListSearch request);
 
+        Task<PageList<TodoItem>> GetTodoListByUserId(Guid userId, TaskListSearch request);
+
         Task<TodoItem> Create(TodoItem todoItem);
 
         Task<TodoItem> Update(TodoItem todoItem);

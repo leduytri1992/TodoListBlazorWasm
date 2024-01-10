@@ -7,6 +7,8 @@ namespace TodoListBlazorWasm.Services
     {
         Task<PageList<TodoItemDto>> GetTodoList(TaskListSearch todoListSearch);
 
+        Task<PageList<TodoItemDto>> GetMyTasks(TaskListSearch taskListSearch);
+
         Task<TodoItemDto> GetTodoItem(string id);
 
         Task<bool> CreateTodoItem(TodoItemCreateRequest request);

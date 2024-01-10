@@ -68,5 +68,30 @@ namespace TodoListBlazorWasm.Services
             var response = await _httpClient.PutAsJsonAsync($"api/todoItems/{id}/assign", request);
             return response.IsSuccessStatusCode;
 		}
-	}
+
+        public async Task<PageList<TodoItemDto>> GetMyTasks(TaskListSearch taskListSearch)
+        {
+            var queryString = new Dictionary<string, string>
+            {
+                ["pageNumber"] = taskListSearch.PageNumber.ToString()
+            };
+
+            if (!string.IsNullOrEmpty(taskListSearch.Name))
+            {
+                queryString.Add("name", taskListSearch.Name);
+            }
+            if (taskListSearch.AssigneeId.HasValue)
+            {
+                queryString.Add("assigneeId", taskListSearch.AssigneeId.ToString());
+            }
+            if (taskListSearch.Priority.HasValue)
+            {
+                queryString.Add("priority", taskListSearch.Priority.ToString());
+            }
+
+            string url = QueryHelpers.AddQueryString("api/todoItems/me", queryString);
+            var response = await _httpClient.GetFromJsonAsync<PageList<TodoItemDto>>(url);
+            return response!;
+        }
+    }
 }
