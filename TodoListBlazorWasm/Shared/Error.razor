@@ -1,0 +1,21 @@
+﻿@using Microsoft.Extensions.Logging
+@using TodoListBlazorWasm.Utilities
+@inject ILogger<Error> Logger
+@inject ToastService ToastService;
+
+<CascadingValue Value="this">
+	@ChildContent
+</CascadingValue>
+
+@code {
+	[Parameter]
+	public RenderFragment ChildContent { get; set; }
+
+	public void ProcessError(Exception ex)
+	{
+		ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Danger, "Error", "Error happen in progress"));
+
+		Logger.LogError("Error::ProcessError - Type: {Type} Message: {Message}",
+			ex.GetType(), ex.Message);
+	}
+}

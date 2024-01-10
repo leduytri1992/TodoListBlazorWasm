@@ -1,0 +1,69 @@
+﻿@page "/todoItemCreate"
+
+@using TodoListBlazorWasm.Services
+@using global::TodoList.Models
+@using global::TodoList.Models.Enums
+
+@inject ITodoItemApiClient TodoitemClientApi
+@inject NavigationManager NavigationManager
+
+<PageTitle>TodoItemCreate</PageTitle>
+
+<h3>Create new Todo Item</h3>
+
+<EditForm Model="TodoItem" OnValidSubmit="@SubmitTodoItem">
+        <DataAnnotationsValidator />
+        <div class="mb-3">
+            <label for="Name" class="form-label">Name</label>
+            <InputText class="form-control" @bind-Value="TodoItem.Name"></InputText>
+            <ValidationMessage For="()=>TodoItem.Name"></ValidationMessage>
+            <small id="nameHelp" class="form-text text-muted">Please enter task title here.</small>
+        </div>
+
+        <div class="mb-3">
+            <label for="Priority" class="form-label">Priority</label>
+            <InputSelect class="form-control" @bind-Value="TodoItem.Priority">
+                <option>Select a priority</option>
+                @foreach (string item in Enum.GetNames(typeof(Priority)))
+                {
+                    <option value="@item">@item</option>
+                }
+            </InputSelect>
+            <ValidationMessage For="()=>TodoItem.Priority"></ValidationMessage>
+            <small id="priorityHelp" class="form-text text-muted">Please choose a priority which you want.</small>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create</button>
+
+</EditForm>
+
+@code {
+
+    [Inject] protected ToastService ToastService { get; set; }
+
+    private TodoItemCreateRequest TodoItem = new TodoItemCreateRequest();
+
+    private async Task SubmitTodoItem(EditContext context)
+    {
+        var isSuccess = await TodoitemClientApi.CreateTodoItem(TodoItem);
+        if (isSuccess)
+        {
+            ToastService.Notify(CreateToastMessage(ToastType.Success, "Successfully"));
+            NavigationManager.NavigateTo("/todoList");
+        }
+        else
+        {
+            ToastService.Notify(CreateToastMessage(ToastType.Warning, "Some thing went wrong"));
+        }
+    }
+
+    private ToastMessage CreateToastMessage(ToastType toastType, string message)
+        => new ToastMessage
+            {
+                Type = toastType,
+                Title = "Create new task",
+                HelpText = $"{DateTime.Now}",
+                Message = message,
+            };
+}
+

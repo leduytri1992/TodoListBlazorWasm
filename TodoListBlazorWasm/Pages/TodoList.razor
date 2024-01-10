@@ -1,0 +1,60 @@
+﻿@page "/todoList"
+
+@using TodoListBlazorWasm.Components
+@using TodoListBlazorWasm.Pages.Components
+@using global::TodoList.Models.Enums
+
+@inject IConfiguration Configuration
+
+<PageTitle>TodoList</PageTitle>
+
+<h1>Todo List</h1>
+
+@if (TodoItems == null)
+{
+    PreloadService.Show(SpinnerColor.Primary, "Loading...");
+}
+else
+{
+    PreloadService.Hide();
+
+    <div class="row">
+        <TodoItemSearch OnSearch="SearchTodoItem"></TodoItemSearch>
+    </div>
+
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Priority</th>
+                    <th>Assignee</th>
+                    <th>Create Date</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in TodoItems)
+                {
+                    <tr>
+                        <td>@item.Name</td>
+                        <td><PriorityLabel Priority="@item.Priority"></PriorityLabel></td>
+                        <td><a @onclick="() => OnAssignTask(item.Id)">@item.AssigneeName</a></td>
+                        <td>@item.CreatedDate.ToString(Configuration["DateTimeFormat"])</td>
+                        <td><StatusLabel Status="@item.Status"></StatusLabel></td>
+                        <td>
+                            <a href="/todoItem/@item.Id" class="btn btn-primary">Edit</a>
+                            <Button Color="ButtonColor.Danger" @onclick="() => OnDeleteItem(item.Id)">Delete</Button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <Paginnation MetaData="MetaData" Spread="2" SelectedPage="OnSelectedPage"></Paginnation>
+            </tfoot>
+        </table>
+        <Confirmation @ref="DeleteConfirmation" OnConfirmation="@OnDeleteConfirm"></Confirmation>
+        <AssignTask @ref="AssignTaskDialog" CloseEventCallback="@OnAssignTaskDone"></AssignTask>
+    </div>
+}

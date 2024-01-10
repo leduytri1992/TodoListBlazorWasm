@@ -1,0 +1,127 @@
+﻿@page "/todoItem/{Id}"
+
+@using TodoListBlazorWasm.Services
+@using TodoListBlazorWasm.Utilities
+@using global::TodoList.Models
+@using global::TodoList.Models.Enums
+
+@inject ITodoItemApiClient TodoItemApi
+@inject IUserApiClient UserApi
+@inject IConfiguration Configuration
+@inject PreloadService PreloadService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Todo Item</h3>
+
+@if (TodoItem is null || Assignees is null)
+{
+	PreloadService.Show(SpinnerColor.Primary, "Loading...");
+}
+else
+{
+	PreloadService.Hide();
+
+	<EditForm Model="@UpdateRequest" OnValidSubmit="@UpdateTodoItem">
+		<DataAnnotationsValidator />
+
+		<div class="mb-3">
+			<label for="Name" class="form-label">Name</label>
+			<InputText class="form-control" @bind-Value="UpdateRequest.Name">UpdateRequest.Name</InputText>
+			<ValidationMessage For="()=>UpdateRequest.Name"></ValidationMessage>
+		</div>
+
+		<div class="mb-3">
+			<label for="Assignee" class="form-label">Assignee</label>
+			<InputSelect class="form-select" @bind-Value="UpdateRequest.AssigneeId">
+				<option>N/A</option>
+				@foreach (var assignee in Assignees)
+				{
+					if (assignee.Id == UpdateRequest.AssigneeId)
+					{
+						<option value="@assignee.Id" selected>@assignee.Name</option>
+					}
+					else if (!string.IsNullOrEmpty(assignee.Name))
+					{
+						<option value="@assignee.Id">@assignee.Name</option>
+					}
+				}
+			</InputSelect>
+		</div>
+
+		<div class="mb-3">
+			<label for="Priority" class="form-label">Priority</label>
+			<InputSelect class="form-control" @bind-Value="UpdateRequest.Priority">
+				@foreach (string item in Enum.GetNames(typeof(Priority)))
+				{
+					if (item == UpdateRequest.Priority.ToString())
+					{
+						<option value="@item" selected>@item</option>
+					}
+					else
+					{
+						<option value="@item">@item</option>
+					}
+				}
+			</InputSelect>
+		</div>
+
+		<div class="mb-3">
+			<label for="Status" class="form-label">Status</label>
+			<InputSelect class="form-control" @bind-Value="UpdateRequest.Status">
+				@foreach (string item in Enum.GetNames(typeof(Status)))
+				{
+					if (item == UpdateRequest.Status.ToString())
+					{
+						<option value="@item" selected>@item</option>
+					}
+					else
+					{
+						<option value="@item">@item</option>
+					}
+				}
+			</InputSelect>
+		</div>
+
+		<Button Type="ButtonType.Submit" Color="ButtonColor.Primary">Save</Button>
+
+	</EditForm>
+}
+
+@code {
+
+	[Parameter]
+	public string Id { get; set; }
+
+	[Inject] protected ToastService? ToastService { get; set; }
+
+	private TodoItemUpdateRequest UpdateRequest = new TodoItemUpdateRequest();
+
+	private TodoItemDto? TodoItem { get; set; }
+
+	private List<AssigneeDto>? Assignees { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		Assignees = await UserApi.GetUserList();
+
+		TodoItem = await TodoItemApi.GetTodoItem(Id);
+		UpdateRequest.Name = TodoItem.Name;
+		UpdateRequest.AssigneeId = TodoItem.AssigneeId;
+		UpdateRequest.Priority = TodoItem.Priority;
+		UpdateRequest.Status = TodoItem.Status;
+	}
+
+	private async Task UpdateTodoItem(EditContext context)
+	{
+		var isSuccess = await TodoItemApi.UpdateTodoItem(Id, UpdateRequest);
+		if (isSuccess)
+		{
+			ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Success, "Update task", "Successfully"));
+			NavigationManager.NavigateTo("/todoList");
+		}
+		else
+		{
+			ToastService?.Notify(ViewUtils.CreateToastMessage(ToastType.Warning, "Update task", "Some thing went wrong :)"));
+		}
+	}
+}

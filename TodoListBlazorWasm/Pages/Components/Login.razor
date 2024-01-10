@@ -1,0 +1,49 @@
+﻿@page "/login"
+
+@using TodoListBlazorWasm.Services
+@using global::TodoList.Models
+@inject IAuthService AuthService
+@inject NavigationManager NavigationManager
+
+@if (ShowError)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@Error</p>
+    </div>
+}
+
+<EditForm Model="LoginModel" OnValidSubmit="LoginSubmit">
+    <DataAnnotationsValidator></DataAnnotationsValidator>
+
+    <div class="mb-3">
+        <label for="username">Username</label>
+        <InputText class="form-control" id="username" placeholder="Enter user name" @bind-Value="LoginModel.UserName"></InputText>
+        <ValidationMessage For="()=>LoginModel.UserName"></ValidationMessage>
+    </div>
+    <div class="mb-3">
+        <label for="password">Password</label>
+        <InputText type="password" class="form-control" id="password" placeholder="Password" @bind-Value="LoginModel.Password"></InputText>
+        <ValidationMessage For="()=>LoginModel.Password"></ValidationMessage>
+    </div>
+    <button type="submit" class="btn btn-primary mt-2">Login</button>
+</EditForm>
+
+@code {
+    private bool ShowError;
+    private string Error = "";
+    private LoginRequest LoginModel = new LoginRequest();
+
+    protected async Task LoginSubmit()
+    {
+        ShowError = false;
+        var result = await AuthService.Login(LoginModel);
+        if (result.Successful)
+        {
+            NavigationManager.NavigateTo("/todoList");
+        }
+        else {
+            ShowError = true;
+            Error = result.Error;
+        }
+    }
+}

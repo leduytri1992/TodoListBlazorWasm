@@ -1,0 +1,70 @@
+﻿@using TodoListBlazorWasm.Services
+@using TodoListBlazorWasm.Pages.Components
+@using global::TodoList.Models
+@using global::TodoList.Models.Enums
+
+@if (Assignees is not null)
+{
+    <EditForm Model="@SearchRequest" OnValidSubmit="@SearchForm">
+        <div class="row">
+            <div class="col">
+                <label>Name</label>
+                <InputText class="form-control" @bind-Value="SearchRequest.Name"></InputText>
+            </div>
+
+            <div class="col">
+                <label>Assignee</label>
+                <InputSelect class="form-select" @bind-Value="SearchRequest.AssigneeId">
+                    <option value="">Select</option>
+                    @foreach (var assignee in Assignees)
+                    {
+                        @if (!string.IsNullOrEmpty(assignee.Name))
+                        {
+                            <option value="@assignee.Id">@assignee.Name</option>
+                        }
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="col">
+                <label>Priority</label>
+                <InputSelect class="form-select" @bind-Value="SearchRequest.Priority">
+                    <option value="">Select</option>
+                    @foreach (var item in Enum.GetNames(typeof(Priority)))
+                    {
+                        <option value="@item">@item</option>
+                    }
+                </InputSelect>
+            </div>
+
+            <div class="col pt-4">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+
+            <div class="col pt-4">
+                <a href="/todoItemCreate" class="btn btn-success">Create</a>
+            </div>
+        </div>
+    </EditForm>
+}
+
+@code {
+    [Inject] private IUserApiClient UserApi { get; set; }
+
+    [Parameter]
+    public EventCallback<TaskListSearch> OnSearch { get; set; }
+
+    private List<AssigneeDto>? Assignees;
+
+    private TaskListSearch SearchRequest = new TaskListSearch();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Assignees = await UserApi.GetUserList();
+    }
+
+    protected async Task SearchForm(EditContext context)
+    {
+        await OnSearch.InvokeAsync(SearchRequest);
+    }
+}
